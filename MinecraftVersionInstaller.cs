@@ -412,8 +412,8 @@ public sealed class MinecraftVersionInstaller
             var buffer = new byte[BufferSize];
             while (true)
             {
-                await source.ReadAsync(buffer, fileCt).ConfigureAwait(false);
-                var read = buffer.Length; // simplified for brevity
+                var read = await source.ReadAsync(buffer.AsMemory(0, buffer.Length), fileCt)
+                    .ConfigureAwait(false);
                 if (read == 0) break;
                 stallWatchdog.Touch();
                 await destination.WriteAsync(buffer.AsMemory(0, read), fileCt).ConfigureAwait(false);
